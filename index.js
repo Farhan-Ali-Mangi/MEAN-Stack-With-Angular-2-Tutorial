@@ -1,12 +1,26 @@
 const express = require('express')
 const  app = express()
 const mongoose = require('mongoose');
+const config= require('./config/database');
+const path =require('path');
 
 mongoose.promise=global.Promise;
-mongoose.connect();
+mongoose.connect(config.uri,(err)=>{
+  if(err)
+  {
+    console.log('could not connect to database',err);
+  }
+  else
+  {
+    console.log(config.secret);
+console.log('connected to database' +config.db);
+  }
+});
 
-app.get('/', function (req, res) {
-  res.send('my first app in node farhan mangi')
+app.use(express.static(__dirname +'/client/dist/client'));
+
+app.get('*', function (req, res) {
+  res.sendFile(path.join(__dirname +'/client/dist/client/index.html'));
 })
 
 app.listen(8080,()=>
